@@ -2,7 +2,7 @@ type semantic_type =
 	|Element
 	|Truth
 
-let main () = 
+let main () =
 	Printf.printf "idk" ;;
 
 let _ = main () ;;
