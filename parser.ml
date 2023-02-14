@@ -1,5 +1,6 @@
-open Core
-open Lexicon
+open Core ;;
+open Lexicon ;;
+open Rules ;;
 
 let main () =
   let word_list =
@@ -10,9 +11,8 @@ let main () =
     List.map word_list ~f:(fun str ->
       let tok = str_to_token str in
       let tok_type = token_to_type tok in
-      (tok, tok_type)) in
-  match token_type_list with
-  | [] -> print_string "No Input\n"
-  | (tok, _) :: _ -> print_string (token_to_str tok) ;;
+      (Single tok, tok_type)) in
+  let toks, final_type = build_tree token_type_list in
+  print_string (tokens_to_str toks) ;;
 
 let _ = main () ;;
