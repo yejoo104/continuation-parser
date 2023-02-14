@@ -13,6 +13,7 @@ let main () =
       let tok_type = token_to_type tok in
       (Single tok, tok_type)) in
   let toks, final_type = build_tree token_type_list in
-  print_string (tokens_to_str toks) ;;
+  print_string (tokens_to_str toks);
+  Out_channel.newline stdout ;;
 
 let _ = main () ;;

@@ -6,6 +6,9 @@ let apply_rule ((tok1, type1): tokens * semantic_type) ((tok2, type2): tokens * 
   | t1, Backward(t2, t3) ->
     if t1 = t2 then Some (List [Single (Construct BACKWARD); tok1; tok2], t3)
     else None
+  | Forward(t1, t2), t3 ->
+    if t1 = t3 then Some (List [Single (Construct FORWARD); tok1; tok2], t2)
+    else None
   | _ -> None ;;
 
 let rec find_rule (prev : (tokens * semantic_type) list) (lst : (tokens * semantic_type) list) : (tokens * semantic_type) list option =
