@@ -9,11 +9,12 @@ let main () =
     | None -> [] in
   let token_type_list =
     List.map word_list ~f:(fun str ->
-      let tok = str_to_token str in
-      let tok_type = token_to_type tok in
-      (Single tok, tok_type)) in
+      let tok = Token.str_to_token str in
+      let tok_type = Token.token_to_type tok in
+      (Tokens.Single tok, tok_type)) in
   let bound_token_type_list = bind [] [] token_type_list in
   let results = build_all_trees [] bound_token_type_list in
-  List.iter ~f:(fun (toks, _) -> print_string (tokens_to_str toks); Out_channel.newline stdout) results
+  let remove_dups_results = List.dedup_and_sort ~compare:(fun (tok1, _) (tok2, _) -> Stdlib.compare tok1 tok2) results in
+  List.iter ~f:(fun (toks, _) -> print_string (Tokens.tokens_to_str toks); Out_channel.newline stdout) remove_dups_results
 
 let _ = main () ;;

@@ -2,7 +2,7 @@ open Core ;;
 open Types ;;
 open Lexicon ;;
 
-let apply_all_rules ((tok1, type1): tokens * semantic_type) ((tok2, type2): tokens * semantic_type) : (tokens * semantic_type) list option =
+let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): Tokens.t * semantic_type) : (Tokens.t * semantic_type) list option =
   match type1, type2 with
   (* Putting this at front for ease of pattern-matching. Clean up a little bit afterwards *)
   (* TODO: DEFINITELY CLEAN THIS SHIT UP *)
@@ -101,7 +101,7 @@ let apply_all_rules ((tok1, type1): tokens * semantic_type) ((tok2, type2): toke
     Some [List [Single (Construct BIND); tok2], Function(Continuation(Element, Pronoun(Element, t1)), t2)]
   | _ -> None
 
-let rec find_all_rules (prev : (tokens * semantic_type) list) (lst : (tokens * semantic_type) list) : (tokens * semantic_type) list list =
+let rec find_all_rules (prev : (Tokens.t * semantic_type) list) (lst : (Tokens.t * semantic_type) list) : (Tokens.t * semantic_type) list list =
   match lst with
   | e1 :: e2 :: tl ->
     (match apply_all_rules e1 e2 with
@@ -113,7 +113,7 @@ let rec find_all_rules (prev : (tokens * semantic_type) list) (lst : (tokens * s
        find_all_rules (prev @ [e1]) (e2 :: tl))
   | _ -> [] ;;
 
-let rec evaluate ((toks, semantic_type) : tokens * semantic_type) : (tokens * semantic_type) option =
+let rec evaluate ((toks, semantic_type) : Tokens.t * semantic_type) : (Tokens.t * semantic_type) option =
   match semantic_type with
   | Truth -> Some (toks, semantic_type)
   | Function(Continuation(Truth, Truth), t1) ->
@@ -122,7 +122,7 @@ let rec evaluate ((toks, semantic_type) : tokens * semantic_type) : (tokens * se
     evaluate (List [Single (Construct SKIP); Single (Construct EVAL); toks], Function(Continuation(t1, t2), t3))
   | _ -> None
 
-let rec build_all_trees (completed : (tokens * semantic_type) list) (lst : (tokens * semantic_type) list list) : (tokens * semantic_type) list =
+let rec build_all_trees (completed : (Tokens.t * semantic_type) list) (lst : (Tokens.t * semantic_type) list list) : (Tokens.t * semantic_type) list =
   (* print_int (List.length completed); *)
   (* print_int (List.length lst); *)
   match lst with
@@ -144,7 +144,7 @@ let rec build_all_trees (completed : (tokens * semantic_type) list) (lst : (toke
 
 (* Rule 15 (one part of it lol) *)
 (* TODO: Perhaps we want a separate name for adding BIND*)
-let rec bind (result : (tokens * semantic_type) list list) (prev : (tokens * semantic_type) list) (lst : (tokens * semantic_type) list) : (tokens * semantic_type) list list =
+let rec bind (result : (Tokens.t * semantic_type) list list) (prev : (Tokens.t * semantic_type) list) (lst : (Tokens.t * semantic_type) list) : (Tokens.t * semantic_type) list list =
   match lst with
   | [] -> prev :: result
   | (tok, semantic_type) :: tl ->
