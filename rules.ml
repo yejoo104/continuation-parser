@@ -11,6 +11,19 @@ let apply_all_rules ((tok1, type1): tokens * semantic_type) ((tok2, type2): toke
   | Function(Continuation(t1, t2), t3), Function(Continuation(Function(Continuation(Backward(t4, t5), t6), t7), t8), t9) ->
     (match (equivalent_type t1 t4), (equivalent_type t2 t7) with
      | Some t1, Some t2 ->
+       let t5, t6, t3, t8, t9 =
+         update_type t1 t5,
+         update_type t1 t6,
+         update_type t1 t3,
+         update_type t1 t8,
+         update_type t1 t9 in
+       let t5, t6, t3, t8, t9 =
+         update_type t2 t5,
+         update_type t2 t6,
+         update_type t2 t3,
+         update_type t2 t8,
+         update_type t2 t9 in
+       if List.exists ~f:fail_fast_mismatch [t5;t6;t3;t8;t9] then None else
        Some [List [Single (Construct META); List [Single (Construct META); Single (Construct BACKWARD)]; List [Single (Construct LIFT); tok1]; tok2], Function(Continuation(Function(Continuation(t5, t6), t3), t8), t9)]
      | None, _ | _, None -> None)
   (* Rule 12 *)
@@ -62,14 +75,14 @@ let apply_all_rules ((tok1, type1): tokens * semantic_type) ((tok2, type2): toke
     (match (equivalent_type t1 t4) with
      | Some t1 ->
        Some [List [Single (Construct META); Single (Construct BACKWARD); tok1; List [Single (Construct LIFT); tok2]], Function(Continuation(t5, t2), t3);
-             List [Single (Construct META); List [Single (Construct META); Single (Construct BACKWARD)]; List [Single (Construct SKIP); Single (Construct LIFT); tok1]; List [Single (Construct LIFT); List [Single (Construct LIFT); tok2]]], Function(Continuation(Function(Continuation(t2, Empty), Empty), t4), t5)]
+             List [Single (Construct META); List [Single (Construct META); Single (Construct BACKWARD)]; List [Single (Construct SKIP); Single (Construct LIFT); tok1]; List [Single (Construct LIFT); List [Single (Construct LIFT); tok2]]], Function(Continuation(Function(Continuation(t2, Empty "1"), Empty "1"), t4), t5)]
      | None -> None)
   (* Rule 4, 9 *)
   | Forward(t1, t2), Function(Continuation(t3, t4), t5) ->
     (match (equivalent_type t1 t3) with
      | Some t1 ->
        Some [List [Single (Construct META); Single (Construct FORWARD); List [Single (Construct LIFT); tok1]; tok2], Function(Continuation(t2, t4), t5);
-             List [Single (Construct META); List [Single (Construct META); Single (Construct FORWARD)]; List [Single (Construct LIFT); List [Single (Construct LIFT); tok1]]; List [Single (Construct SKIP); Single (Construct LIFT); tok2]], Function(Continuation(Function(Continuation(t2, Empty), Empty), t4), t5)]
+             List [Single (Construct META); List [Single (Construct META); Single (Construct FORWARD)]; List [Single (Construct LIFT); List [Single (Construct LIFT); tok1]]; List [Single (Construct SKIP); Single (Construct LIFT); tok2]], Function(Continuation(Function(Continuation(t2, Empty "2"), Empty "2"), t4), t5)]
      | None -> None)
   (* Rule 1 *)
   | t1, Backward(t2, t3) ->
@@ -100,13 +113,29 @@ let rec find_all_rules (prev : (tokens * semantic_type) list) (lst : (tokens * s
        find_all_rules (prev @ [e1]) (e2 :: tl))
   | _ -> [] ;;
 
+let rec evaluate ((toks, semantic_type) : tokens * semantic_type) : (tokens * semantic_type) option =
+  match semantic_type with
+  | Truth -> Some (toks, semantic_type)
+  | Function(Continuation(Truth, Truth), t1) ->
+    evaluate (List [Single (Construct EVAL); toks], t1)
+  | Function(Continuation(Function(Continuation(Truth, Truth), t1), t2), t3) ->
+    evaluate (List [Single (Construct SKIP); Single (Construct EVAL); toks], Function(Continuation(t1, t2), t3))
+  | _ -> None
+
 let rec build_all_trees (completed : (tokens * semantic_type) list) (lst : (tokens * semantic_type) list list) : (tokens * semantic_type) list =
   (* print_int (List.length completed); *)
   (* print_int (List.length lst); *)
   match lst with
   | [] -> completed
-  | [(toks, semantic_type)] :: tl ->
-    build_all_trees ((toks, semantic_type) :: completed) tl
+  | [parse] :: tl ->
+    (* let toks, semantic_type = parse in *)
+    (* print_string (tokens_to_str toks); *)
+    (* Out_channel.newline stdout; *)
+    (* print_string (type_to_str semantic_type); *)
+    (* Out_channel.newline stdout; *)
+    (match (evaluate parse) with
+    | Some eval -> build_all_trees (eval :: completed) tl
+    | None -> build_all_trees completed tl)
   | to_find :: tl ->
     (* List.iter ~f:(fun (toks, _) -> print_string (tokens_to_str toks); Out_channel.newline stdout) to_find; *)
     (* print_string "current run done\n"; *)
