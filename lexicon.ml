@@ -8,6 +8,7 @@ type construct =
   | EVAL
   | SKIP
   | META
+  | BIND
 
 let construct_to_str (construct : construct) : string =
   match construct with
@@ -17,9 +18,11 @@ let construct_to_str (construct : construct) : string =
   | EVAL -> "E"
   | SKIP -> "S"
   | META -> "M"
+  | BIND -> "BIND"
 
 type token =
   | Construct of construct
+  | Her
   | Everyone
   | Someone
   | Whansung
@@ -29,6 +32,7 @@ type token =
   | Left
   | Saw
   | Thought
+  | Loves
 
 type tokens =
   | Single of token
@@ -36,6 +40,7 @@ type tokens =
 
 let str_to_token (str : string) : token =
   match str with
+  | "her" -> Her
   | "everyone" -> Everyone
   | "someone" -> Someone
   | "whansung" -> Whansung
@@ -45,11 +50,13 @@ let str_to_token (str : string) : token =
   | "left" -> Left
   | "saw" -> Saw
   | "thought" -> Thought
+  | "loves" -> Loves
   | _ -> failwith "couldn't match string to token"
 
 let token_to_str (tok : token) : string =
   match tok with
   | Construct construct -> construct_to_str construct
+  | Her -> "her"
   | Everyone -> "everyone"
   | Someone -> "someone"
   | Whansung -> "whansung"
@@ -59,10 +66,12 @@ let token_to_str (tok : token) : string =
   | Left -> "left"
   | Saw -> "saw"
   | Thought -> "thought"
+  | Loves -> "loves"
 
 let token_to_type (tok : token) : semantic_type =
   match tok with
   | Construct _ -> Construct
+  | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth)) (* TODO: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
   | Everyone -> Function(Continuation(Element, Truth), Truth)
   | Someone -> Function(Continuation(Element, Truth), Truth)
   | Whansung -> Element
@@ -72,6 +81,7 @@ let token_to_type (tok : token) : semantic_type =
   | Left -> Backward(Element, Truth)
   | Saw -> Forward(Element, Backward(Element, Truth))
   | Thought -> Forward(Truth, Backward(Element, Truth))
+  | Loves -> Forward(Element, Backward(Element, Truth))
 
 let rec tokens_to_str (toks : tokens) : string =
   match toks with
