@@ -17,6 +17,10 @@ let main () =
   (* let results = build_all_trees [] bound_token_type_list in *)
   (* let remove_dups_results = List.dedup_and_sort ~compare:(fun (tok1, _) (tok2, _) -> Stdlib.compare tok1 tok2) results in *)
   (* List.iter ~f:(fun (toks, _) -> print_string (Tokens.tokens_to_str toks); Out_channel.newline stdout) remove_dups_results; *)
-  print_string (Lambda.lambda_to_string (Construct.construct_to_lterm BIND))
+  let meta = Construct.construct_to_lterm META in
+  let forward = Construct.construct_to_lterm FORWARD in
+  let res1 = Lambda.normal_form_print (LApp(meta, forward)) in
+  let _res2 = Lambda.normal_form_print (LApp(meta, res1)) in
+  ()
 
 let _ = main () ;;
