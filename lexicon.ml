@@ -1,5 +1,6 @@
 open Core ;;
 open Types ;;
+open Lterm ;;
 
 module Construct = struct
   type t =
@@ -20,6 +21,16 @@ module Construct = struct
     | SKIP -> "S"
     | META -> "M"
     | BIND -> "BIND"
+
+  let construct_to_lterm (construct : t) : Lambda.t =
+    match construct with
+    | FORWARD -> LLam("f", LLam("x", LApp(LId "f", LId "x")))
+    | BACKWARD -> LLam("x", LLam("f", LApp(LId "f", LId "x")))
+    | LIFT -> LLam("x", LLam("c", LApp(LId "c", LId "x")))
+    | EVAL -> LLam("X", LApp(LId "X", LLam("x", LId "x")))
+    | SKIP -> LLam("X", LLam("Y", LLam("c", LApp(LId "Y", LLam("y", LApp(LId "c", LApp(LId "X", LId "y")))))))
+    | META -> LLam("X", LLam("L", LLam("R", LLam("c", LApp(LId "L", LLam("l", LApp(LId "R", LLam("r", LApp(LId "c", LApp(LApp(LId "X", LId "l"), LId "r"))))))))))
+    | BIND -> LLam("X", LLam("c", LApp(LId "X", LLam("x", LApp(LApp(LId "c", LId "x"), LId "x")))))
 end
 
 module Token = struct
@@ -81,6 +92,10 @@ module Token = struct
     | Saw -> Forward(Element, Backward(Element, Truth))
     | Thought -> Forward(Truth, Backward(Element, Truth))
     | Loves -> Forward(Element, Backward(Element, Truth))
+
+  let token_to_lterm (tok : t) : Lambda.t =
+    match tok with
+    | Construct c -> Construct.construct_to_lterm c
 end
 
 module Tokens = struct
@@ -96,6 +111,7 @@ module Tokens = struct
       let strs = List.map ~f:(fun toks -> tokens_to_str toks) toks in
       List.fold_left ~init:(List.hd_exn strs) ~f:(fun str1 str2 -> str1 ^ " " ^ str2) (List.tl_exn strs)
       ^ ")"
+
 end
 
 
