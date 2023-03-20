@@ -12,7 +12,7 @@ module Construct = struct
     | META
     | BIND
 
-  let construct_to_str (construct : t) : string =
+  let to_string (construct : t) : string =
     match construct with
     | FORWARD -> "F"
     | BACKWARD -> "B"
@@ -22,7 +22,7 @@ module Construct = struct
     | META -> "M"
     | BIND -> "BIND"
 
-  let construct_to_lterm (construct : t) : Lambda.t =
+  let to_lambda (construct : t) : Lambda.t =
     match construct with
     | FORWARD -> LLam("f", LLam("x", LApp(LId "f", LId "x")))
     | BACKWARD -> LLam("x", LLam("f", LApp(LId "f", LId "x")))
@@ -48,7 +48,7 @@ module Token = struct
     | Thought
     | Loves
 
-  let str_to_token (str : string) : t =
+  let of_string (str : string) : t =
     match str with
     | "her" -> Her
     | "everyone" -> Everyone
@@ -63,9 +63,9 @@ module Token = struct
     | "loves" -> Loves
     | _ -> failwith "couldn't match string to token"
 
-  let token_to_str (tok : t) : string =
+  let to_string (tok : t) : string =
     match tok with
-    | Construct construct -> Construct.construct_to_str construct
+    | Construct construct -> Construct.to_string construct
     | Her -> "her"
     | Everyone -> "everyone"
     | Someone -> "someone"
@@ -78,7 +78,7 @@ module Token = struct
     | Thought -> "thought"
     | Loves -> "loves"
 
-  let token_to_type (tok : t) : Type.t =
+  let to_type (tok : t) : Type.t =
     match tok with
     | Construct _ -> Construct
     | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth)) (* TODO: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
@@ -93,9 +93,9 @@ module Token = struct
     | Thought -> Forward(Truth, Backward(Element, Truth))
     | Loves -> Forward(Element, Backward(Element, Truth))
 
-  let token_to_lterm (tok : t) : Lambda.t =
+  let to_lambda (tok : t) : Lambda.t =
     match tok with
-    | Construct c -> Construct.construct_to_lterm c
+    | Construct c -> Construct.to_lambda c
     | Her -> LLam ("c", LId "c")
     | Everyone -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
@@ -113,20 +113,20 @@ module Tokens = struct
     | Single of Token.t
     | List of t list
 
-  let rec tokens_to_str (toks : t) : string =
+  let rec to_string (toks : t) : string =
     match toks with
-    | Single tok -> Token.token_to_str tok
+    | Single tok -> Token.to_string tok
     | List toks ->
       "(" ^
-      let strs = List.map ~f:(fun toks -> tokens_to_str toks) toks in
+      let strs = List.map ~f:(fun toks -> to_string toks) toks in
       List.fold_left ~init:(List.hd_exn strs) ~f:(fun str1 str2 -> str1 ^ " " ^ str2) (List.tl_exn strs)
       ^ ")"
 
-  let rec tokens_to_lterm (toks : t) : Lambda.t =
+  let rec to_lambda (toks : t) : Lambda.t =
     match toks with
-    | Single tok -> Token.token_to_lterm tok
+    | Single tok -> Token.to_lambda tok
     | List toks ->
-      let lambdas = List.map ~f:(fun toks -> tokens_to_lterm toks) toks in
+      let lambdas = List.map ~f:(fun toks -> to_lambda toks) toks in
       List.fold_left ~init:(List.hd_exn lambdas) ~f:(fun l1 l2 -> Lambda.apply l1 l2) (List.tl_exn lambdas)
 end
 
