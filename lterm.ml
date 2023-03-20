@@ -75,6 +75,22 @@ module Lambda = struct
     | None -> lambda
     | Some new_lambda -> normal_form new_lambda
 
+  let apply (lambda1 : t) (lambda2 : t) : t =
+    let rec bound_vars (lambda : t) : SS.t =
+      match lambda with
+      | LLam (var, exp) -> SS.add var (bound_vars exp)
+      | _ -> SS.empty in
+    let rec replace_vars (lambda : t) (to_replace : SS.t) : t =
+      match lambda with
+      | LLam (var, exp) ->
+        if (SS.mem var to_replace) then
+          let new_var = fresh_var var to_replace in
+          LLam (new_var, replace_vars (substitute exp var (LId new_var)) to_replace)
+        else LLam (var, replace_vars exp to_replace)
+      | _ -> lambda in
+    let l1_bound_vars = bound_vars lambda1 in
+    let new_l2 = replace_vars lambda2 l1_bound_vars in
+    normal_form (LApp (lambda1, new_l2))
 end
 
 
