@@ -122,6 +122,12 @@ module Tokens = struct
       List.fold_left ~init:(List.hd_exn strs) ~f:(fun str1 str2 -> str1 ^ " " ^ str2) (List.tl_exn strs)
       ^ ")"
 
+  let rec tokens_to_lterm (toks : t) : Lambda.t =
+    match toks with
+    | Single tok -> Token.token_to_lterm tok
+    | List toks ->
+      let lambdas = List.map ~f:(fun toks -> tokens_to_lterm toks) toks in
+      List.fold_left ~init:(List.hd_exn lambdas) ~f:(fun l1 l2 -> Lambda.apply l1 l2) (List.tl_exn lambdas)
 end
 
 

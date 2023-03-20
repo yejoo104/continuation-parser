@@ -24,6 +24,8 @@ module Lambda = struct
          "(" ^ (lambda_to_string exp1) ^ ") " ^ (lambda_to_string exp2)
        | _, LLam _ ->
          (lambda_to_string exp1) ^ " (" ^ (lambda_to_string exp2) ^ ")"
+       | _, LId _ | _, LApp _ ->
+         (lambda_to_string exp1) ^ "(" ^ (lambda_to_string exp2) ^ ")"
        | _, _ -> (lambda_to_string exp1) ^ " " ^ (lambda_to_string exp2))
 
   let rec fv (lambda : t) : SS.t =
