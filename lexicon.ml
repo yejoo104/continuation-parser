@@ -96,6 +96,9 @@ module Token = struct
   let token_to_lterm (tok : t) : Lambda.t =
     match tok with
     | Construct c -> Construct.construct_to_lterm c
+    | Her -> LLam ("c", LId "c")
+    | Everyone -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
+    | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
 end
 
 module Tokens = struct
