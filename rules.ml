@@ -1,8 +1,8 @@
 open Core ;;
-open Types ;;
+open Type ;;
 open Lexicon ;;
 
-let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): Tokens.t * semantic_type) : (Tokens.t * semantic_type) list option =
+let apply_all_rules ((tok1, type1): Tokens.t * Type.t) ((tok2, type2): Tokens.t * Type.t) : (Tokens.t * Type.t) list option =
   match type1, type2 with
   (* Putting this at front for ease of pattern-matching. Clean up a little bit afterwards *)
   (* TODO: DEFINITELY CLEAN THIS SHIT UP *)
@@ -23,7 +23,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t2 t3,
          update_type t2 t8,
          update_type t2 t9 in
-       if List.exists ~f:fail_fast_mismatch [t5;t6;t3;t8;t9] then None else
+       if List.exists ~f:is_mismatch [t5;t6;t3;t8;t9] then None else
        Some [List [Single (Construct META); List [Single (Construct META); Single (Construct BACKWARD)]; List [Single (Construct LIFT); tok1]; tok2], Function(Continuation(Function(Continuation(t5, t6), t3), t8), t9)]
      | None, _ | _, None -> None)
   (* Rule 12 *)
@@ -42,7 +42,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t2 t3,
          update_type t2 t4,
          update_type t2 t5 in
-       if List.exists ~f:fail_fast_mismatch [t7;t8;t3;t4;t5] then None else
+       if List.exists ~f:is_mismatch [t7;t8;t3;t4;t5] then None else
        Some [List [Single (Construct META); List [Single (Construct META); Single (Construct BACKWARD)]; tok1; List [Single (Construct LIFT); tok2]], Function(Continuation(Function(Continuation(t7, t8), t3), t4), t5)]
      | None, _ | _, None -> None)
   (* Rule 13 *)
@@ -61,7 +61,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t3 t4,
          update_type t3 t8,
          update_type t3 t9 in
-       if List.exists ~f:fail_fast_mismatch [t2;t6;t4;t8;t9] then None else
+       if List.exists ~f:is_mismatch [t2;t6;t4;t8;t9] then None else
        Some [List [Single (Construct META); List [Single (Construct META); Single (Construct FORWARD)]; List [Single (Construct LIFT); tok1]; tok2], Function(Continuation(Function(Continuation(t2, t6), t4), t8), t9)]
      | None, _ | _, None -> None
     )
@@ -81,7 +81,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t3 t4,
          update_type t3 t5,
          update_type t3 t6 in
-       if List.exists ~f:fail_fast_mismatch [t2;t8;t4;t5;t6] then None else
+       if List.exists ~f:is_mismatch [t2;t8;t4;t5;t6] then None else
        Some [List [Single (Construct META); List [Single (Construct META); Single (Construct FORWARD)]; tok1; List [Single (Construct LIFT); tok2]], Function(Continuation(Function(Continuation(t2, t8), t4), t5), t6)]
      | None, _ | _, None -> None
     )
@@ -97,7 +97,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t2 t5,
          update_type t2 t6,
          update_type t2 t3 in
-       if List.exists ~f:fail_fast_mismatch [t5;t6;t3] then None else
+       if List.exists ~f:is_mismatch [t5;t6;t3] then None else
        Some [List [Single (Construct META); Single (Construct BACKWARD); tok1; tok2], Function(Continuation(t5, t6), t3)]
      | None, _ | _, None -> None)
   (* Rule 8 *)
@@ -112,7 +112,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t3 t2,
          update_type t3 t6,
          update_type t3 t4 in
-       if List.exists ~f:fail_fast_mismatch [t2;t6;t4] then None else
+       if List.exists ~f:is_mismatch [t2;t6;t4] then None else
        Some [List [Single (Construct META); Single (Construct FORWARD); tok1; tok2], Function(Continuation(t2, t6), t4)]
      | None, _ | _, None -> None)
   (* Rule 5 *)
@@ -123,7 +123,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t1 t3,
          update_type t1 t4,
          update_type t1 t5 in
-       if List.exists ~f:fail_fast_mismatch [t3;t4;t5] then None else
+       if List.exists ~f:is_mismatch [t3;t4;t5] then None else
        Some [List [Single (Construct META); Single (Construct BACKWARD); List [Single (Construct LIFT); tok1]; tok2], Function(Continuation(t3, t4), t5)]
      | None -> None)
   (* Rule 6 *)
@@ -134,7 +134,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t1 t2,
          update_type t1 t3,
          update_type t1 t4 in
-       if List.exists ~f:fail_fast_mismatch [t2;t3;t4] then None else
+       if List.exists ~f:is_mismatch [t2;t3;t4] then None else
        Some [List [Single (Construct META); Single (Construct FORWARD); tok1; List [Single (Construct LIFT); tok2]], Function(Continuation(t2, t3), t4)]
      | None -> None)
   (* Rule 3, 10 *)
@@ -145,7 +145,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t1 t5,
          update_type t1 t2,
          update_type t1 t3 in
-       if List.exists ~f:fail_fast_mismatch [t5;t2;t3] then None else
+       if List.exists ~f:is_mismatch [t5;t2;t3] then None else
        Some [List [Single (Construct META); Single (Construct BACKWARD); tok1; List [Single (Construct LIFT); tok2]], Function(Continuation(t5, t2), t3);
              List [Single (Construct META); List [Single (Construct META); Single (Construct BACKWARD)]; List [Single (Construct SKIP); Single (Construct LIFT); tok1]; List [Single (Construct LIFT); List [Single (Construct LIFT); tok2]]], Function(Continuation(Function(Continuation(t5, Empty "1"), Empty "1"), t2), t3)]
      | None -> None)
@@ -157,7 +157,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
          update_type t1 t2,
          update_type t1 t4,
          update_type t1 t5 in
-       if List.exists ~f:fail_fast_mismatch [t2;t4;t5] then None else
+       if List.exists ~f:is_mismatch [t2;t4;t5] then None else
        Some [List [Single (Construct META); Single (Construct FORWARD); List [Single (Construct LIFT); tok1]; tok2], Function(Continuation(t2, t4), t5);
              List [Single (Construct META); List [Single (Construct META); Single (Construct FORWARD)]; List [Single (Construct LIFT); List [Single (Construct LIFT); tok1]]; List [Single (Construct SKIP); Single (Construct LIFT); tok2]], Function(Continuation(Function(Continuation(t2, Empty "2"), Empty "2"), t4), t5)]
      | None -> None)
@@ -166,7 +166,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
     (match (equivalent_type t1 t2) with
      | Some t1 ->
        let t3 = update_type t1 t3 in
-       if fail_fast_mismatch t3 then None else
+       if is_mismatch t3 then None else
        Some [List [Single (Construct BACKWARD); tok1; tok2], t3]
      | None -> None)
   (* Rule 2 *)
@@ -174,7 +174,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
     (match (equivalent_type t1 t3) with
      | Some t1 ->
        let t2 = update_type t1 t2 in
-       if fail_fast_mismatch t2 then None else
+       if is_mismatch t2 then None else
        Some [List [Single (Construct FORWARD); tok1; tok2], t2]
      | None -> None)
   (* Rule 15 Note: other half of rule found in bind function below *)
@@ -182,7 +182,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * semantic_type) ((tok2, type2): To
     Some [List [Single (Construct BIND); tok2], Function(Continuation(Element, Pronoun(Element, t1)), t2)]
   | _ -> None
 
-let rec find_all_rules (prev : (Tokens.t * semantic_type) list) (lst : (Tokens.t * semantic_type) list) : (Tokens.t * semantic_type) list list =
+let rec find_all_rules (prev : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type.t) list) : (Tokens.t * Type.t) list list =
   match lst with
   | e1 :: e2 :: tl ->
     (match apply_all_rules e1 e2 with
@@ -194,7 +194,7 @@ let rec find_all_rules (prev : (Tokens.t * semantic_type) list) (lst : (Tokens.t
        find_all_rules (prev @ [e1]) (e2 :: tl))
   | _ -> [] ;;
 
-let rec evaluate ((toks, semantic_type) : Tokens.t * semantic_type) : (Tokens.t * semantic_type) option =
+let rec evaluate ((toks, semantic_type) : Tokens.t * Type.t) : (Tokens.t * Type.t) option =
   match semantic_type with
   | Pronoun(Element, Truth) -> Some (toks, semantic_type)
   | Truth -> Some (toks, semantic_type)
@@ -204,7 +204,7 @@ let rec evaluate ((toks, semantic_type) : Tokens.t * semantic_type) : (Tokens.t 
     evaluate (List [Single (Construct SKIP); Single (Construct EVAL); toks], Function(Continuation(t1, t2), t3))
   | _ -> None
 
-let rec build_all_trees (completed : (Tokens.t * semantic_type) list) (lst : (Tokens.t * semantic_type) list list) : (Tokens.t * semantic_type) list =
+let rec build_all_trees (completed : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type.t) list list) : (Tokens.t * Type.t) list =
   (* print_int (List.length completed); *)
   (* print_int (List.length lst); *)
   match lst with
@@ -226,7 +226,7 @@ let rec build_all_trees (completed : (Tokens.t * semantic_type) list) (lst : (To
 
 (* Rule 15 (one part of it lol) *)
 (* TODO: Perhaps we want a separate name for adding BIND*)
-let rec bind (result : (Tokens.t * semantic_type) list list) (prev : (Tokens.t * semantic_type) list) (lst : (Tokens.t * semantic_type) list) : (Tokens.t * semantic_type) list list =
+let rec bind (result : (Tokens.t * Type.t) list list) (prev : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type.t) list) : (Tokens.t * Type.t) list list =
   match lst with
   | [] -> prev :: result
   | (tok, semantic_type) :: tl ->

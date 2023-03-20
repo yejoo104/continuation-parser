@@ -1,5 +1,5 @@
 open Core ;;
-open Types ;;
+open Type ;;
 open Lterm ;;
 
 module Construct = struct
@@ -78,7 +78,7 @@ module Token = struct
     | Thought -> "thought"
     | Loves -> "loves"
 
-  let token_to_type (tok : t) : semantic_type =
+  let token_to_type (tok : t) : Type.t =
     match tok with
     | Construct _ -> Construct
     | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth)) (* TODO: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
