@@ -2,6 +2,7 @@ module SS = Set.Make(String) ;;
 
 module Lambda = struct
   type t =
+    | LWord of string
     | LId of string
     | LLam of string * t
     | LForall of string * t
@@ -10,6 +11,7 @@ module Lambda = struct
 
   let rec lambda_to_string (lambda : t) : string =
     match lambda with
+    | LWord word -> word
     | LId id -> id
     | LLam (var, exp) -> "λ" ^ var ^ "." ^ (lambda_to_string exp)
     | LForall (var, exp) -> "∀" ^ var ^ "." ^ (lambda_to_string exp)
@@ -26,6 +28,7 @@ module Lambda = struct
 
   let rec fv (lambda : t) : SS.t =
     match lambda with
+    | LWord _ -> SS.empty
     | LId x -> SS.singleton x
     | LLam (x, exp) | LForall (x, exp) | LExists (x, exp) ->
       SS.remove x (fv exp)
@@ -39,6 +42,7 @@ module Lambda = struct
   (* substitute all instances of v in e1 with e2 *)
   let rec substitute (e1 : t) (v : string) (e2 : t) =
     match e1 with
+    | LWord _ -> e1
     | LId x -> if x = v then e2 else e1
     (* TODO: unpretty / redundant code *)
     | LLam (x, exp) ->
@@ -66,7 +70,7 @@ module Lambda = struct
 
   let rec reduce (lambda : t) : t option =
     match lambda with
-    | LId _ -> None
+    | LWord _ | LId _ -> None
     (* TODO: unpretty / redundant code *)
     | LLam (x, exp) ->
       (match reduce exp with

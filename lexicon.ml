@@ -99,6 +99,13 @@ module Token = struct
     | Her -> LLam ("c", LId "c")
     | Everyone -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
+    | Whansung -> LWord "whansung"
+    | Yejoo | Yejoos -> LWord "yejoo"
+    | Mother -> LWord "mother"
+    | Left -> LWord "left"
+    | Saw -> LWord "saw"
+    | Thought -> LWord "thought"
+    | Loves -> LWord "love"
 end
 
 module Tokens = struct

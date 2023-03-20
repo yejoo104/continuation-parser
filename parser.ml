@@ -20,11 +20,24 @@ let main () =
   let meta = Token.token_to_lterm (Construct META) in
   let backward = Token.token_to_lterm (Construct BACKWARD) in
   let lift = Token.token_to_lterm (Construct LIFT) in
+  let forward = Token.token_to_lterm (Construct FORWARD) in
+  let skip = Token.token_to_lterm (Construct SKIP) in
   let someone = Token.token_to_lterm Someone in
+  let everyone = Token.token_to_lterm Everyone in
+  let saw = Token.token_to_lterm Saw in
   let mb = Lambda.apply meta backward in
   let lsomeone = Lambda.apply lift someone in
   let mmb = Lambda.apply meta mb in
   let mmblsomeone = Lambda.apply mmb lsomeone in
-  print_string (Lambda.lambda_to_string mmblsomeone ^ "\n")
+  let mf = Lambda.apply meta forward in
+  let lsaw = Lambda.apply lift saw in
+  let llsaw = Lambda.apply lift lsaw in
+  let sl = Lambda.apply skip lift in
+  let sleveryone = Lambda.apply sl everyone in
+  let mmf = Lambda.apply meta mf in
+  let mmfllsaw = Lambda.apply mmf llsaw in
+  let mmfllsawsleveryone = Lambda.apply mmfllsaw sleveryone in
+  let mmblsomeonemmfllsawsleveryone = Lambda.apply mmblsomeone mmfllsawsleveryone in
+  print_string (Lambda.lambda_to_string mmblsomeonemmfllsawsleveryone ^ "\n")
 
 let _ = main () ;;
