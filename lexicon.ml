@@ -1,6 +1,6 @@
 open Core ;;
 open Type ;;
-open Lterm ;;
+open Lambda ;;
 
 module Construct = struct
   type t =
