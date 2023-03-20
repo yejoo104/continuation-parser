@@ -236,3 +236,15 @@ let rec bind (result : (Tokens.t * Type.t) list list) (prev : (Tokens.t * Type.t
        bind (new_result :: result) (prev @ [(tok, semantic_type)]) tl
      | _ -> bind result (prev @ [(tok, semantic_type)]) tl
     )
+
+let build_continuation (word_list : string list) : Tokens.t list =
+  let token_type_list =
+    List.map word_list ~f:(fun str ->
+        let tok = Token.of_string str in
+        let tok_type = Token.to_type tok in
+        (Tokens.Single tok, tok_type)) in
+  let add_binds_list = bind [] [] token_type_list in
+  let continuations = build_all_trees [] add_binds_list in
+  continuations
+  |> List.dedup_and_sort ~compare:(fun (tok1, _) (tok2, _) -> Stdlib.compare tok1 tok2)
+  |> List.map ~f:(fun (tok, _) -> tok)

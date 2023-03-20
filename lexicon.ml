@@ -36,6 +36,7 @@ end
 module Token = struct
   type t =
     | Construct of Construct.t
+    | She
     | Her
     | Everyone
     | Someone
@@ -50,6 +51,7 @@ module Token = struct
 
   let of_string (str : string) : t =
     match str with
+    | "she" -> She
     | "her" -> Her
     | "everyone" -> Everyone
     | "someone" -> Someone
@@ -66,6 +68,7 @@ module Token = struct
   let to_string (tok : t) : string =
     match tok with
     | Construct construct -> Construct.to_string construct
+    | She -> "she"
     | Her -> "her"
     | Everyone -> "everyone"
     | Someone -> "someone"
@@ -81,7 +84,7 @@ module Token = struct
   let to_type (tok : t) : Type.t =
     match tok with
     | Construct _ -> Construct
-    | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth)) (* TODO: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
+    | She | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth)) (* TODO: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
     | Everyone -> Function(Continuation(Element, Truth), Truth)
     | Someone -> Function(Continuation(Element, Truth), Truth)
     | Whansung -> Element
@@ -96,7 +99,7 @@ module Token = struct
   let to_lambda (tok : t) : Lambda.t =
     match tok with
     | Construct c -> Construct.to_lambda c
-    | Her -> LLam ("c", LId "c")
+    | She | Her -> LLam ("c", LId "c")
     | Everyone -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
     | Whansung -> LWord "whansung"

@@ -18,6 +18,7 @@ end
 module Token : sig
   type t =
     | Construct of Construct.t
+    | She
     | Her
     | Everyone
     | Someone

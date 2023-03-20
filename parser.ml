@@ -8,17 +8,10 @@ let main () =
     match In_channel.input_line In_channel.stdin with
     | Some str -> String.split_on_chars ~on:[' '] str
     | None -> [] in
-  let token_type_list =
-    List.map word_list ~f:(fun str ->
-      let tok = Token.of_string str in
-      let tok_type = Token.to_type tok in
-      (Tokens.Single tok, tok_type)) in
-  let bound_token_type_list = bind [] [] token_type_list in
-  let results = build_all_trees [] bound_token_type_list in
-  let remove_dups_results = List.dedup_and_sort ~compare:(fun (tok1, _) (tok2, _) -> Stdlib.compare tok1 tok2) results in
-  List.iter ~f:(fun (toks, _) ->
+  let continuations = build_continuation word_list in
+  List.iter ~f:(fun toks ->
       print_string (Tokens.to_string toks ^ "\n");
       print_string (((Tokens.to_lambda toks) |> Lambda.to_string) ^ "\n"))
-    remove_dups_results
+    continuations
 
 let _ = main () ;;
