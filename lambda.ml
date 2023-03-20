@@ -23,7 +23,7 @@ let rec to_string (lambda : t) : string =
         "(" ^ (to_string exp1) ^ ") " ^ (to_string exp2)
       | _, LLam _ ->
         (to_string exp1) ^ " (" ^ (to_string exp2) ^ ")"
-      | _, LId _ | _, LApp _ ->
+      | _, LId _ | _, LApp _ | _, LWord _ ->
         (to_string exp1) ^ "(" ^ (to_string exp2) ^ ")"
       | _, _ -> (to_string exp1) ^ " " ^ (to_string exp2))
 

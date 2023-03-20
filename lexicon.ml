@@ -132,8 +132,3 @@ module Tokens = struct
       let lambdas = List.map ~f:(fun toks -> to_lambda toks) toks in
       List.fold_left ~init:(List.hd_exn lambdas) ~f:(fun l1 l2 -> Lambda.apply l1 l2) (List.tl_exn lambdas)
 end
-
-
-
-
-
