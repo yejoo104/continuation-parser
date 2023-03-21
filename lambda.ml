@@ -125,5 +125,3 @@ let apply (lambda1 : t) (lambda2 : t) : t =
   let l1_bound_vars = bound_vars lambda1 in
   let new_l2 = replace_vars lambda2 l1_bound_vars in
   normal_form (LApp (lambda1, new_l2))
-
-
