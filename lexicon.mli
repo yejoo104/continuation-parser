@@ -42,8 +42,8 @@ module Token : sig
   val to_lambda : t -> Lambda.t
 end
 
-(* module of how tokens combine in our language *)
-module Tokens : sig
+(* module of how phrases combine in our language *)
+module Phrase : sig
   type t =
     | Single of Token.t
     | List of t list

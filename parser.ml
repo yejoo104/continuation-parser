@@ -16,8 +16,8 @@ let main () =
     | None -> [] in
   let continuations = build_continuation word_list in
   List.iter ~f:(fun toks ->
-      print_string (Tokens.to_string toks ^ "\n");
-      print_string (((Tokens.to_lambda toks) |> Lambda.to_string) ^ "\n"))
+      print_string (Phrase.to_string toks ^ "\n");
+      print_string (((Phrase.to_lambda toks) |> Lambda.to_string) ^ "\n"))
     continuations
 
 let _ = main () ;;

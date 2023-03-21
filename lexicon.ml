@@ -117,8 +117,8 @@ module Token = struct
     | Loves -> LWord "love"
 end
 
-(* module of how tokens combine in our language *)
-module Tokens = struct
+(* module of how phrases combine in our language *)
+module Phrase = struct
   type t =
     | Single of Token.t
     | List of t list

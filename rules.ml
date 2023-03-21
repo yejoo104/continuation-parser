@@ -6,7 +6,7 @@ open Type ;;
 open Lexicon ;;
 
 (* Applies Rule 1 if applicable. Returns None otherwise *)
-let rule1 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule1 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | t1, Backward(t2, t3) ->
     (match (equivalent_type t1 t2) with
@@ -19,7 +19,7 @@ let rule1 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 2 if applicable. Returns None otherwise *)
-let rule2 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule2 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Forward(t1, t2), t3 ->
     (match (equivalent_type t1 t3) with
@@ -32,7 +32,7 @@ let rule2 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 3 if applicable. Returns None otherwise *)
-let rule3 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule3 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(t1, t2), t3), Backward(t4, t5) ->
     (match (equivalent_type t1 t4) with
@@ -48,7 +48,7 @@ let rule3 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 4 if applicable. Returns None otherwise *)
-let rule4 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule4 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Forward(t1, t2), Function(Continuation(t3, t4), t5) ->
     (match (equivalent_type t1 t3) with
@@ -64,7 +64,7 @@ let rule4 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 5 if applicable. Returns None otherwise *)
-let rule5 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule5 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | t1, Function(Continuation(Backward(t2, t3), t4), t5) ->
     (match (equivalent_type t1 t2) with
@@ -80,7 +80,7 @@ let rule5 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 6 if applicable. Returns None otherwise *)
-let rule6 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule6 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(Forward(t1, t2), t3), t4), t5 ->
     (match (equivalent_type t1 t5) with
@@ -96,7 +96,7 @@ let rule6 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 7 if applicable. Returns None otherwise *)
-let rule7 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule7 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(t1, t2), t3), Function(Continuation(Backward(t4, t5), t6), t7) ->
     (match (equivalent_type t1 t4), (equivalent_type t2 t7) with
@@ -116,7 +116,7 @@ let rule7 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 8 if applicable. Returns None otherwise *)
-let rule8 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule8 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(Forward(t1, t2), t3), t4), Function(Continuation(t5, t6), t7) ->
     (match (equivalent_type t1 t5), (equivalent_type t3 t7) with
@@ -136,7 +136,7 @@ let rule8 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 9 if applicable. Returns None otherwise *)
-let rule9 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule9 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Forward(t1, t2), Function(Continuation(t3, t4), t5) ->
     (match (equivalent_type t1 t3) with
@@ -152,7 +152,7 @@ let rule9 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) 
   | _ -> None
 
 (* Applies Rule 10 if applicable. Returns None otherwise *)
-let rule10 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule10 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(t1, t2), t3), Backward(t4, t5) ->
     (match (equivalent_type t1 t4) with
@@ -168,7 +168,7 @@ let rule10 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t)
   | _ -> None
 
 (* Applies Rule 11 if applicable. Returns None otherwise *)
-let rule11 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule11 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(t1, t2), t3), Function(Continuation(Function(Continuation(Backward(t4, t5), t6), t7), t8), t9) ->
     (match (equivalent_type t1 t4), (equivalent_type t2 t7) with
@@ -192,7 +192,7 @@ let rule11 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t)
   | _ -> None
 
 (* Applies Rule 12 if applicable. Returns None otherwise *)
-let rule12 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule12 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(Function(Continuation(t1, t2), t3), t4), t5), Function(Continuation(Backward(t6, t7), t8), t9) ->
     (match (equivalent_type t1 t6), (equivalent_type t2 t9) with
@@ -216,7 +216,7 @@ let rule12 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t)
   | _ -> None
 
 (* Applies Rule 13 if applicable. Returns None otherwise *)
-let rule13 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule13 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(Forward(t1, t2), t3), t4), Function(Continuation(Function(Continuation(t5, t6), t7), t8), t9) ->
     (match (equivalent_type t1 t5), (equivalent_type t3 t7) with
@@ -240,7 +240,7 @@ let rule13 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t)
   | _ -> None
 
 (* Applies Rule 14 if applicable. Returns None otherwise *)
-let rule14 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule14 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Function(Continuation(Function(Continuation(Forward(t1, t2), t3), t4), t5), t6), Function(Continuation(t7, t8), t9) ->
     (match (equivalent_type t1 t7), (equivalent_type t3 t9) with
@@ -264,14 +264,14 @@ let rule14 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t)
   | _ -> None
 
 (* Applies Rule 15 if applicable. Returns None otherwise *)
-let rule15 (tok1 : Tokens.t) (tok2 : Tokens.t) (type1 : Type.t) (type2 : Type.t) : (Tokens.t * Type.t) option =
+let rule15 (tok1 : Phrase.t) (tok2 : Phrase.t) (type1 : Type.t) (type2 : Type.t) : (Phrase.t * Type.t) option =
   match type1, type2 with
   | Bind, Function(Continuation(Element, t1), t2) ->
     Some (List [Single (Construct BIND); tok2], Function(Continuation(Element, Pronoun(Element, t1)), t2))
   | _ -> None
 
 (* Given two phrases and their types, applies all the possible rules and returns all possible combinations *)
-let apply_all_rules ((tok1, type1): Tokens.t * Type.t) ((tok2, type2): Tokens.t * Type.t) : (Tokens.t * Type.t) list =
+let apply_all_rules ((tok1, type1): Phrase.t * Type.t) ((tok2, type2): Phrase.t * Type.t) : (Phrase.t * Type.t) list =
   [rule1 tok1 tok2 type1 type2;
    rule2 tok1 tok2 type1 type2;
    rule3 tok1 tok2 type1 type2;
@@ -290,7 +290,7 @@ let apply_all_rules ((tok1, type1): Tokens.t * Type.t) ((tok2, type2): Tokens.t 
   |> List.filter_map ~f:(fun x -> x)
 
 (* Iterates through a list of tokens and finds all rules that could combine two consecutive tokens *)
-let rec find_all_rules (prev : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type.t) list) : (Tokens.t * Type.t) list list =
+let rec find_all_rules (prev : (Phrase.t * Type.t) list) (lst : (Phrase.t * Type.t) list) : (Phrase.t * Type.t) list list =
   match lst with
   | e1 :: e2 :: tl ->
     (match apply_all_rules e1 e2 with
@@ -303,7 +303,7 @@ let rec find_all_rules (prev : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type
   | _ -> [] ;;
 
 (* Evaluates the type of a token and returns None if it does not evaluate to a truth value, pronoun value, or something that will eventually become a truth value or pronoun value*)
-let rec evaluate ((toks, semantic_type) : Tokens.t * Type.t) : (Tokens.t * Type.t) option =
+let rec evaluate ((toks, semantic_type) : Phrase.t * Type.t) : (Phrase.t * Type.t) option =
   match semantic_type with
   | Pronoun(Element, Truth) -> Some (toks, semantic_type)
   | Truth -> Some (toks, semantic_type)
@@ -314,7 +314,7 @@ let rec evaluate ((toks, semantic_type) : Tokens.t * Type.t) : (Tokens.t * Type.
   | _ -> None
 
 (* Iterates through a queue and recursively builds all possible parses *)
-let rec build_all_trees (completed : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type.t) list list) : (Tokens.t * Type.t) list =
+let rec build_all_trees (completed : (Phrase.t * Type.t) list) (lst : (Phrase.t * Type.t) list list) : (Phrase.t * Type.t) list =
   match lst with
   | [] -> completed
   | [parse] :: tl ->
@@ -326,7 +326,7 @@ let rec build_all_trees (completed : (Tokens.t * Type.t) list) (lst : (Tokens.t 
     build_all_trees completed (new_rules @ tl)
 
 (* Iterates through a list of tokens and adds BIND operator if applicable *)
-let rec bind (result : (Tokens.t * Type.t) list list) (prev : (Tokens.t * Type.t) list) (lst : (Tokens.t * Type.t) list) : (Tokens.t * Type.t) list list =
+let rec bind (result : (Phrase.t * Type.t) list list) (prev : (Phrase.t * Type.t) list) (lst : (Phrase.t * Type.t) list) : (Phrase.t * Type.t) list list =
   match lst with
   | [] -> prev :: result
   | (tok, semantic_type) :: tl ->
@@ -338,12 +338,12 @@ let rec bind (result : (Tokens.t * Type.t) list list) (prev : (Tokens.t * Type.t
     )
 
 (* Builds all continuation-based readings given a sentence *)
-let build_continuation (word_list : string list) : Tokens.t list =
+let build_continuation (word_list : string list) : Phrase.t list =
   let token_type_list =
     List.map word_list ~f:(fun str ->
         let tok = Token.of_string str in
         let tok_type = Token.to_type tok in
-        (Tokens.Single tok, tok_type)) in
+        (Phrase.Single tok, tok_type)) in
   let add_binds_list = bind [] [] token_type_list in
   let continuations = build_all_trees [] add_binds_list in
   continuations
