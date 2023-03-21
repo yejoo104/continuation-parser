@@ -43,7 +43,7 @@ Input: everyone loves her mother
 ```
 
 ## How to Tweak for Own Use
-The current lexicon of this project is fairly limited (around 15 words). One can navigate to `lexicon.ml` and `lexicon.mli` and easily add more words. After adding more words, compiling and running the program locally should allow the user to use the continuation0based parser with a more expansive vocabulary.
+The current lexicon of this project is fairly limited (around 15 words). One can navigate to `lexicon.ml` and `lexicon.mli` and easily add more words. When adding new words, please make sure to add the corresponding type, lambda expression, and string in the file as well such that every pattern-matching is exhaustive. After adding more words, compiling and running the program locally should allow the user to use the continuation-based parser with a more expansive vocabulary.
 
 ## How to Test
 If you make additional edits and are unsure of the functionality, you can run a fairly robust test suite which can be found in `test.ml`. New tests can also easily be added to `test.ml` using the existing unit testing infrastructure. In order to run tests locally, run the following commands on terminal.
