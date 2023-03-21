@@ -1,3 +1,8 @@
+(*
+                  Types of Continuation Based Semantics
+*)
+
+(* Types *)
 type t =
   | Construct (* This is for convenience because we can't represent polymorphism yet *)
   | Bind (* This represents a bind *)
@@ -11,11 +16,13 @@ type t =
   | Function of t * t (* -> operator *)
   | Pronoun of t * t (* |> operator *)
 
+(* Returns True if there is a type mismatch *)
 let is_mismatch (t : t) : bool =
   match t with
   | Type_Mismatch -> true
   | _ -> false
 
+(* Given two types, returns whether they are or could be equivalent *)
 let equivalent_type (t1 : t) (t2 : t) : (string option * t) option =
   match t1, t2 with
   | Empty id1, Empty id2 ->
@@ -24,6 +31,7 @@ let equivalent_type (t1 : t) (t2 : t) : (string option * t) option =
   | t, Empty id -> Some (Some id, t)
   | t1, t2 -> if t1 = t2 then Some (None, t1) else None
 
+(* Given a new type and an old type, either reconciles them or creates a type mismatch if irreconcilable *)
 let update_type ((new_id, new_type) : (string option * t)) (old_type : t) : t =
   match new_id, old_type with
   | Some id1, Empty id2 ->

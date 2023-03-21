@@ -1,7 +1,12 @@
+(*
+            Continuation Builder and Lambda Interpreter -- Testing
+*)
+
 open Core ;;
 open Lexicon ;;
 open Rules ;;
 
+(* unit test for building continuations *)
 let build_unit_test (input : string list) (expected_output : Tokens.t list) (test_name : string) : unit =
   let tokens = build_continuation input in
   let sorted_expected_output = List.sort ~compare:Stdlib.compare expected_output in
@@ -9,12 +14,14 @@ let build_unit_test (input : string list) (expected_output : Tokens.t list) (tes
   | true -> Printf.printf "passed %s\n" test_name
   | false -> Printf.printf "FAILED %s\n" test_name
 
+(* unit test for lambda interpreter *)
 let interpret_unit_test (input : Tokens.t) (expected_output : Lambda.t) (test_name : string) : unit =
   let lambda_exp = Tokens.to_lambda input in
   match (Stdlib.(=) lambda_exp expected_output) with
   | true -> Printf.printf "passed %s\n" test_name
   | false -> Printf.printf "FAILED %s\n" test_name
 
+(* all tests for continuation builder *)
 let build_tests () =
   print_string "Running Build Tests...\n";
   (* Test 1 : Ye Joo left *)
@@ -55,6 +62,7 @@ let build_tests () =
   build_unit_test input8 output8 "everyone loves her mother";
   print_string "\n"
 
+(* all tests for lambda interpreter *)
 let interpret_tests () =
   print_string "Running Interpret Tests...\n";
   (* Test 1 : Ye Joo left *)

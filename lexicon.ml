@@ -1,7 +1,11 @@
+(*
+                       Lexicon for a Simple Language
+*)
 open Core ;;
 open Type ;;
 open Lambda ;;
 
+(* module of special constructs in continuation semantics *)
 module Construct = struct
   type t =
     | FORWARD
@@ -33,6 +37,7 @@ module Construct = struct
     | BIND -> LLam("X", LLam("c", LApp(LId "X", LLam("x", LApp(LApp(LId "c", LId "x"), LId "x")))))
 end
 
+(* module of tokens that we are using in our language *)
 module Token = struct
   type t =
     | Construct of Construct.t
@@ -112,6 +117,7 @@ module Token = struct
     | Loves -> LWord "love"
 end
 
+(* module of how tokens combine in our language *)
 module Tokens = struct
   type t =
     | Single of Token.t

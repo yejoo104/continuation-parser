@@ -1,6 +1,10 @@
+(*
+                       Lexicon for a Simple Language
+*)
 open Lambda ;;
 open Type ;;
 
+(* module of special constructs in continuation semantics *)
 module Construct : sig
   type t =
     | FORWARD
@@ -15,6 +19,7 @@ module Construct : sig
   val to_lambda : t -> Lambda.t
 end
 
+(* module of tokens that we are using in our language *)
 module Token : sig
   type t =
     | Construct of Construct.t
@@ -37,6 +42,7 @@ module Token : sig
   val to_lambda : t -> Lambda.t
 end
 
+(* module of how tokens combine in our language *)
 module Tokens : sig
   type t =
     | Single of Token.t

@@ -1,5 +1,9 @@
+(*
+                   Lambda Construct for a Simple Language
+*)
 module SS = Set.Make(String) ;;
 
+(* Lambda Expression *)
 type t =
   | LWord of string
   | LId of string
@@ -8,6 +12,7 @@ type t =
   | LExists of string * t
   | LApp of t * t
 
+(* function that takes a lambda expression as input and returns a corresponding string *)
 let rec to_string (lambda : t) : string =
   match lambda with
   | LWord word -> word
@@ -27,6 +32,7 @@ let rec to_string (lambda : t) : string =
         (to_string exp1) ^ "(" ^ (to_string exp2) ^ ")"
       | _, _ -> (to_string exp1) ^ " " ^ (to_string exp2))
 
+(* function that returns a set of free variables of a given lambda expression *)
 let rec fv (lambda : t) : SS.t =
   match lambda with
   | LWord _ -> SS.empty
@@ -35,12 +41,13 @@ let rec fv (lambda : t) : SS.t =
     SS.remove x (fv exp)
   | LApp (exp1, exp2) -> SS.union (fv exp1) (fv exp2)
 
+(* function that generates a fresh variable that is not in the set of free variables *)
 let rec fresh_var (v : string) (fvs : SS.t) =
   let new_var = v ^ "'" in
   if (SS.mem new_var fvs) then fresh_var new_var fvs
   else new_var
 
-(* substitute all instances of v in e1 with e2 *)
+(* function that substitutes all instances of v in e1 with e2 *)
 let rec substitute (e1 : t) (v : string) (e2 : t) =
   match e1 with
   | LWord _ -> e1
@@ -68,6 +75,7 @@ let rec substitute (e1 : t) (v : string) (e2 : t) =
         LExists (y, substitute (substitute exp x (LId y)) v e2)
   | LApp (e3, e4) -> LApp (substitute e3 v e2, substitute e4 v e2)
 
+(* function that takes one small step from a lambda expression to another lambda expression. returns None if no step is taken *)
 let rec reduce (lambda : t) : t option =
   match lambda with
   | LWord _ | LId _ -> None
@@ -91,6 +99,7 @@ let rec reduce (lambda : t) : t option =
                 | Some new_exp2 -> Some (LApp (exp1, new_exp2)))
       | Some new_exp1 -> Some (LApp (new_exp1, exp2)))
 
+(* function that reduces a lambda expression fully and prints the process *)
 let normal_form_print (lambda : t) : t =
   let rec helper t =
     print_endline(" = " ^ to_string t);
@@ -102,16 +111,20 @@ let normal_form_print (lambda : t) : t =
     None -> (print_endline("Term already in normal form"); lambda)
   | Some t' -> (print_endline("   " ^ to_string lambda); helper t')
 
+(* function that reduces a lambda expression fully *)
 let rec normal_form (lambda : t) : t =
   match reduce lambda with
   | None -> lambda
   | Some new_lambda -> normal_form new_lambda
 
+(* function that applies one lambda expression to another and reduces it *)
 let apply (lambda1 : t) (lambda2 : t) : t =
+  (* helper function that returns a set of variables bound in the lambda expression *)
   let rec bound_vars (lambda : t) : SS.t =
     match lambda with
     | LLam (var, exp) -> SS.add var (bound_vars exp)
     | _ -> SS.empty in
+  (* helper function that replaces all variables in [to_replace] in the lambda expression *)
   let rec replace_vars (lambda : t) (to_replace : SS.t) : t =
     match lambda with
     | LLam (var, exp) ->

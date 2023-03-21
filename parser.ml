@@ -1,8 +1,14 @@
+(*
+                    Parser that takes Sentence as Input
+                       Builds a Continuation Sentence
+                Generates a Fully Reduced Lambda Expression
+*)
 open Core ;;
 open Lexicon ;;
 open Rules ;;
 open Lambda ;;
 
+(* main function takes a sentence as input and prints both a continuation semantics sentence and a lambda expression *)
 let main () =
   let word_list =
     match In_channel.input_line In_channel.stdin with
