@@ -45,7 +45,6 @@ let rec substitute (e1 : t) (v : string) (e2 : t) =
   match e1 with
   | LWord _ -> e1
   | LId x -> if x = v then e2 else e1
-  (* TODO: unpretty / redundant code *)
   | LLam (x, exp) ->
     if x = v then e1
     else let fvs = fv e2 in
@@ -72,7 +71,6 @@ let rec substitute (e1 : t) (v : string) (e2 : t) =
 let rec reduce (lambda : t) : t option =
   match lambda with
   | LWord _ | LId _ -> None
-  (* TODO: unpretty / redundant code *)
   | LLam (x, exp) ->
     (match reduce exp with
       | None -> None

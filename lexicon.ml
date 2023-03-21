@@ -84,7 +84,8 @@ module Token = struct
   let to_type (tok : t) : Type.t =
     match tok with
     | Construct _ -> Construct
-    | She | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth)) (* TODO: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
+    (* Note: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
+    | She | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth))
     | Everyone -> Function(Continuation(Element, Truth), Truth)
     | Someone -> Function(Continuation(Element, Truth), Truth)
     | Whansung -> Element

@@ -19,8 +19,7 @@ let is_mismatch (t : t) : bool =
 let equivalent_type (t1 : t) (t2 : t) : (string option * t) option =
   match t1, t2 with
   | Empty id1, Empty id2 ->
-    (* TODO: the else case is mishandled *)
-    if id1 = id2 then Some (None, Empty id1) else Some (None, Empty (id1 ^ id2))
+    if id1 = id2 then Some (None, Empty id1) else Some (None, Type_Mismatch)
   | Empty id, t
   | t, Empty id -> Some (Some id, t)
   | t1, t2 -> if t1 = t2 then Some (None, t1) else None
