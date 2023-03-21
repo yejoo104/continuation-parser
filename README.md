@@ -1,5 +1,4 @@
 # Continuation Based Semantics: Parser and Interpreter
-## A parser that allows parsing English sentences into continuation based semantics and an interpreter that reduces the continuation based expression to the simplest lambda expression
 
 This project was built as part of Ye Joo Han's undergraduate thesis in Computer Science and Linguistics at Harvard College. The project is an implementation of continuation-based semantics, a semantics theory that was developed by Shan & Barker in their 2006 paper EXPLAINING CROSSOVER AND SUPERIORITY AS LEFT-TO-RIGHT EVALUATION.
 
@@ -10,20 +9,11 @@ The project has the following functionality:
 
 ## How to Use
 1. Clone the github respository by running `git clone https://github.com/yejoo104/continuation-parser.git` on the terminal or download the ZIP file on github
-2. The following commands can be run on the terminal.\
-To compile just the parser:
+2. Run the following command on the terminal in order to compile the parser.
 ```console
 make parser
 ```
-To compile just the tester:
-```console
-make test
-```
-To compile both:
-```console
-make
-```
-3. In order to use the parser, run the following on the terminal and then type a sentence as input.\
+3. In order to run the parser, run the following on the terminal and then type a sentence as input.
 ```console
 ./parser.byte
 ```
@@ -59,8 +49,6 @@ The current lexicon of this project is fairly limited (around 15 words). One can
 If you make additional edits and are unsure of the functionality, you can run a fairly robust test suite which can be found in `test.ml`. New tests can also easily be added to `test.ml` using the existing unit testing infrastructure. In order to run tests locally, run the following commands on terminal.
 ```console
 make test
-```
-```console
 ./test.byte
 ```
 
