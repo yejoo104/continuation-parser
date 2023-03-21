@@ -19,7 +19,7 @@ make parser
 ```
 
 ## Usage
-Below are some example inputs and outputs for the parser.
+Below are some example inputs and outputs for the parser.\
 Input: yejoo thought whansung left
 ```console
 (B yejoo (F thought (B whansung left)))
