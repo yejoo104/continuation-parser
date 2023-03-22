@@ -35,6 +35,7 @@ module Token : sig
     | Everyones
     | Someone
     | On
+    | InFrontOf
     | Whansung
     | Yejoo
     | Yejoos
@@ -42,11 +43,13 @@ module Token : sig
     | Mothers
     | Friend
     | Birthday
+    | Lawyer
     | Left
     | Saw
     | Thought
     | Loves
     | Called
+    | Interviewed
 
   val of_string : string -> t
   val to_string : t -> string

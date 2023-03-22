@@ -53,6 +53,7 @@ module Token = struct
     | Everyones
     | Someone
     | On
+    | InFrontOf
     | Whansung
     | Yejoo
     | Yejoos
@@ -60,11 +61,13 @@ module Token = struct
     | Mothers
     | Friend
     | Birthday
+    | Lawyer
     | Left
     | Saw
     | Thought
     | Loves
     | Called
+    | Interviewed
 
   let of_string (str : string) : t =
     match str with
@@ -80,6 +83,7 @@ module Token = struct
     | "everyone's" -> Everyones
     | "someone" -> Someone
     | "on" -> On
+    | "in-front-of" -> InFrontOf
     | "whansung" -> Whansung
     | "yejoo" -> Yejoo
     | "yejoo's" -> Yejoos
@@ -87,10 +91,12 @@ module Token = struct
     | "mother's" -> Mothers
     | "friend" -> Friend
     | "birthday" -> Birthday
+    | "lawyer" -> Lawyer
     | "left" -> Left
     | "saw" -> Saw
     | "thought" -> Thought
     | "loves" -> Loves
+    | "interviewed" -> Interviewed
     | "called" -> Called
     | _ -> failwith "couldn't match string to token"
 
@@ -109,6 +115,7 @@ module Token = struct
     | Everyones -> "everyone's"
     | Someone -> "someone"
     | On -> "on"
+    | InFrontOf -> "in front of"
     | Whansung -> "whansung"
     | Yejoo -> "yejoo"
     | Yejoos -> "yejoo's"
@@ -116,11 +123,13 @@ module Token = struct
     | Mothers -> "mother's"
     | Friend -> "friend"
     | Birthday -> "birthday"
+    | Lawyer -> "lawyer"
     | Left -> "left"
     | Saw -> "saw"
     | Thought -> "thought"
     | Loves -> "loves"
     | Called -> "called"
+    | Interviewed -> "interviewed"
 
   let to_type (tok : t) : Type.t =
     match tok with
@@ -130,16 +139,19 @@ module Token = struct
     | Everyone | Everyones -> Function(Continuation(Element, Truth), Truth)
     | Someone -> Function(Continuation(Element, Truth), Truth)
     | On -> Forward(Element, Backward(Backward (Element, Truth), Backward(Element, Truth)))
+    | InFrontOf -> Forward(Element, Backward(Backward (Element, Truth), Backward(Element, Truth)))
     | Whansung -> Element
     | Yejoo | Yejoos -> Element
     | Mother | Mothers -> Backward(Element, Element)
     | Friend -> Backward(Element, Element)
     | Birthday -> Backward(Element, Element)
+    | Lawyer -> Backward(Element, Element)
     | Left -> Backward(Element, Truth)
     | Saw -> Forward(Element, Backward(Element, Truth))
     | Thought -> Forward(Truth, Backward(Element, Truth))
     | Loves -> Forward(Element, Backward(Element, Truth))
     | Called -> Forward(Element, Backward(Element, Truth))
+    | Interviewed -> Forward(Element, Backward(Element, Truth))
 
   let to_lambda (tok : t) : Lterm.t =
     match tok with
@@ -148,16 +160,19 @@ module Token = struct
     | Everyone | Everyones -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
     | On -> LWord "on"
+    | InFrontOf -> LWord "in-front-of"
     | Whansung -> LWord "whansung"
     | Yejoo | Yejoos -> LWord "yejoo"
     | Mother | Mothers -> LWord "mother"
     | Friend -> LWord "friend"
     | Birthday -> LWord "birthday"
+    | Lawyer -> LWord "lawyer"
     | Left -> LWord "left"
     | Saw -> LWord "saw"
     | Thought -> LWord "thought"
     | Loves -> LWord "love"
     | Called -> LWord "call"
+    | Interviewed -> LWord "interview"
 end
 
 (* module of how phrases combine in our language *)
