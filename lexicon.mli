@@ -24,20 +24,29 @@ module Token : sig
   type t =
     | Construct of Construct.t
     | She
+    | He
+    | They
     | Her
+    | His
+    | Their
+    | Him
+    | Them
     | Everyone
     | Everyones
     | Someone
+    | On
     | Whansung
     | Yejoo
     | Yejoos
     | Mother
     | Mothers
     | Friend
+    | Birthday
     | Left
     | Saw
     | Thought
     | Loves
+    | Called
 
   val of_string : string -> t
   val to_string : t -> string
