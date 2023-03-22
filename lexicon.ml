@@ -44,11 +44,14 @@ module Token = struct
     | She
     | Her
     | Everyone
+    | Everyones
     | Someone
     | Whansung
     | Yejoo
     | Yejoos
     | Mother
+    | Mothers
+    | Friend
     | Left
     | Saw
     | Thought
@@ -59,11 +62,14 @@ module Token = struct
     | "she" -> She
     | "her" -> Her
     | "everyone" -> Everyone
+    | "everyone's" -> Everyones
     | "someone" -> Someone
     | "whansung" -> Whansung
     | "yejoo" -> Yejoo
     | "yejoo's" -> Yejoos
     | "mother" -> Mother
+    | "mother's" -> Mothers
+    | "friend" -> Friend
     | "left" -> Left
     | "saw" -> Saw
     | "thought" -> Thought
@@ -76,11 +82,14 @@ module Token = struct
     | She -> "she"
     | Her -> "her"
     | Everyone -> "everyone"
+    | Everyones -> "everyone's"
     | Someone -> "someone"
     | Whansung -> "whansung"
     | Yejoo -> "yejoo"
     | Yejoos -> "yejoo's"
     | Mother -> "mother"
+    | Mothers -> "mother's"
+    | Friend -> "friend"
     | Left -> "left"
     | Saw -> "saw"
     | Thought -> "thought"
@@ -91,12 +100,12 @@ module Token = struct
     | Construct _ -> Construct
     (* Note: actual pronoun type is (e ~ A) -> (e |> a). we assume a = t *)
     | She | Her -> Function(Continuation(Element, Truth), Pronoun(Element, Truth))
-    | Everyone -> Function(Continuation(Element, Truth), Truth)
+    | Everyone | Everyones -> Function(Continuation(Element, Truth), Truth)
     | Someone -> Function(Continuation(Element, Truth), Truth)
     | Whansung -> Element
-    | Yejoo -> Element
-    | Yejoos -> Element
-    | Mother -> Backward(Element, Element)
+    | Yejoo | Yejoos -> Element
+    | Mother | Mothers -> Backward(Element, Element)
+    | Friend -> Backward(Element, Element)
     | Left -> Backward(Element, Truth)
     | Saw -> Forward(Element, Backward(Element, Truth))
     | Thought -> Forward(Truth, Backward(Element, Truth))
@@ -106,11 +115,12 @@ module Token = struct
     match tok with
     | Construct c -> Construct.to_lambda c
     | She | Her -> LLam ("c", LId "c")
-    | Everyone -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
+    | Everyone | Everyones -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
     | Whansung -> LWord "whansung"
     | Yejoo | Yejoos -> LWord "yejoo"
-    | Mother -> LWord "mother"
+    | Mother | Mothers -> LWord "mother"
+    | Friend -> LWord "friend"
     | Left -> LWord "left"
     | Saw -> LWord "saw"
     | Thought -> LWord "thought"

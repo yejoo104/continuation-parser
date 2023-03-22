@@ -26,11 +26,14 @@ module Token : sig
     | She
     | Her
     | Everyone
+    | Everyones
     | Someone
     | Whansung
     | Yejoo
     | Yejoos
     | Mother
+    | Mothers
+    | Friend
     | Left
     | Saw
     | Thought
