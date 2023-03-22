@@ -3,7 +3,7 @@
 *)
 open Core ;;
 open Type ;;
-open Lambda ;;
+open Lterm ;;
 
 (* module of special constructs in continuation semantics *)
 module Construct = struct
@@ -26,7 +26,7 @@ module Construct = struct
     | META -> "M"
     | BIND -> "BIND"
 
-  let to_lambda (construct : t) : Lambda.t =
+  let to_lambda (construct : t) : Lterm.t =
     match construct with
     | FORWARD -> LLam("f", LLam("x", LApp(LId "f", LId "x")))
     | BACKWARD -> LLam("x", LLam("f", LApp(LId "f", LId "x")))
@@ -111,7 +111,7 @@ module Token = struct
     | Thought -> Forward(Truth, Backward(Element, Truth))
     | Loves -> Forward(Element, Backward(Element, Truth))
 
-  let to_lambda (tok : t) : Lambda.t =
+  let to_lambda (tok : t) : Lterm.t =
     match tok with
     | Construct c -> Construct.to_lambda c
     | She | Her -> LLam ("c", LId "c")
@@ -142,10 +142,10 @@ module Phrase = struct
       List.fold_left ~init:(List.hd_exn strs) ~f:(fun str1 str2 -> str1 ^ " " ^ str2) (List.tl_exn strs)
       ^ ")"
 
-  let rec to_lambda (toks : t) : Lambda.t =
+  let rec to_lambda (toks : t) : Lterm.t =
     match toks with
     | Single tok -> Token.to_lambda tok
     | List toks ->
       let lambdas = List.map ~f:(fun toks -> to_lambda toks) toks in
-      List.fold_left ~init:(List.hd_exn lambdas) ~f:(fun l1 l2 -> Lambda.apply l1 l2) (List.tl_exn lambdas)
+      List.fold_left ~init:(List.hd_exn lambdas) ~f:(fun l1 l2 -> Lterm.apply l1 l2) (List.tl_exn lambdas)
 end

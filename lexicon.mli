@@ -1,7 +1,7 @@
 (*
                        Lexicon for a Simple Language
 *)
-open Lambda ;;
+open Lterm ;;
 open Type ;;
 
 (* module of special constructs in continuation semantics *)
@@ -16,7 +16,7 @@ module Construct : sig
     | BIND
 
   val to_string : t -> string
-  val to_lambda : t -> Lambda.t
+  val to_lambda : t -> Lterm.t
 end
 
 (* module of tokens that we are using in our language *)
@@ -42,7 +42,7 @@ module Token : sig
   val of_string : string -> t
   val to_string : t -> string
   val to_type : t -> Type.t
-  val to_lambda : t -> Lambda.t
+  val to_lambda : t -> Lterm.t
 end
 
 (* module of how phrases combine in our language *)
@@ -52,5 +52,5 @@ module Phrase : sig
     | List of t list
 
   val to_string : t -> string
-  val to_lambda : t -> Lambda.t
+  val to_lambda : t -> Lterm.t
 end

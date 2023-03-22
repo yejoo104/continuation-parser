@@ -6,7 +6,7 @@
 open Core ;;
 open Lexicon ;;
 open Rules ;;
-open Lambda ;;
+open Lterm ;;
 
 (* main function takes a sentence as input and prints both a continuation semantics sentence and a lambda expression *)
 let main () =
@@ -17,7 +17,7 @@ let main () =
   let continuations = build_continuation word_list in
   List.iter ~f:(fun toks ->
       print_string (Phrase.to_string toks ^ "\n");
-      print_string (((Phrase.to_lambda toks) |> Lambda.to_string) ^ "\n"))
+      print_string (((Phrase.to_lambda toks) |> Lterm.to_string) ^ "\n"))
     continuations
 
 let _ = main () ;;
