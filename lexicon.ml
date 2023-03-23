@@ -52,6 +52,8 @@ module Token = struct
     | Everyone
     | Everyones
     | Someone
+    | A
+    | Is
     | On
     | InFrontOf
     | Whansung
@@ -62,6 +64,10 @@ module Token = struct
     | Friend
     | Birthday
     | Lawyer
+    | Woman
+    | Pretty
+    | Bankrupt
+    | Poor
     | Left
     | Saw
     | Thought
@@ -82,6 +88,8 @@ module Token = struct
     | "everyone" -> Everyone
     | "everyone's" -> Everyones
     | "someone" -> Someone
+    | "a" -> A
+    | "is" -> Is
     | "on" -> On
     | "in-front-of" -> InFrontOf
     | "whansung" -> Whansung
@@ -92,6 +100,10 @@ module Token = struct
     | "friend" -> Friend
     | "birthday" -> Birthday
     | "lawyer" -> Lawyer
+    | "woman" -> Woman
+    | "pretty" -> Pretty
+    | "bankrupt" -> Bankrupt
+    | "poor" -> Poor
     | "left" -> Left
     | "saw" -> Saw
     | "thought" -> Thought
@@ -114,6 +126,8 @@ module Token = struct
     | Everyone -> "everyone"
     | Everyones -> "everyone's"
     | Someone -> "someone"
+    | A -> "a"
+    | Is -> "is"
     | On -> "on"
     | InFrontOf -> "in front of"
     | Whansung -> "whansung"
@@ -124,6 +138,10 @@ module Token = struct
     | Friend -> "friend"
     | Birthday -> "birthday"
     | Lawyer -> "lawyer"
+    | Woman -> "woman"
+    | Pretty -> "pretty"
+    | Bankrupt -> "bankrupt"
+    | Poor -> "poor"
     | Left -> "left"
     | Saw -> "saw"
     | Thought -> "thought"
@@ -138,6 +156,8 @@ module Token = struct
     | She | Her | He | His | Him | They | Their | Them -> Function(Continuation(Element, Truth), Pronoun(Element, Truth))
     | Everyone | Everyones -> Function(Continuation(Element, Truth), Truth)
     | Someone -> Function(Continuation(Element, Truth), Truth)
+    | A -> Forward(Backward(Element, Truth), Function(Continuation(Element, Truth), Truth))
+    | Is -> Forward(Backward(Element, Truth), Backward(Element, Truth))
     | On -> Forward(Element, Backward(Backward (Element, Truth), Backward(Element, Truth)))
     | InFrontOf -> Forward(Element, Backward(Backward (Element, Truth), Backward(Element, Truth)))
     | Whansung -> Element
@@ -146,6 +166,10 @@ module Token = struct
     | Friend -> Backward(Element, Element)
     | Birthday -> Backward(Element, Element)
     | Lawyer -> Backward(Element, Element)
+    | Woman -> Backward(Element, Truth)
+    | Pretty -> Backward(Element, Truth)
+    | Bankrupt -> Backward(Element, Truth)
+    | Poor -> Backward(Element, Truth)
     | Left -> Backward(Element, Truth)
     | Saw -> Forward(Element, Backward(Element, Truth))
     | Thought -> Forward(Truth, Backward(Element, Truth))
@@ -159,6 +183,8 @@ module Token = struct
     | She | Her | He | His | Him | They | Their | Them -> LLam ("c", LId "c")
     | Everyone | Everyones -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
+    | A -> LLam("P", LLam("c", LExists ("x", LAnd (LApp (LId "P", LId "x"), LApp (LId "c", LId "x")))))
+    | Is -> LLam ("x", LId "x")
     | On -> LWord "on"
     | InFrontOf -> LWord "in-front-of"
     | Whansung -> LWord "whansung"
@@ -167,6 +193,10 @@ module Token = struct
     | Friend -> LWord "friend"
     | Birthday -> LWord "birthday"
     | Lawyer -> LWord "lawyer"
+    | Woman -> LWord "woman"
+    | Pretty -> LWord "pretty"
+    | Bankrupt -> LWord "bankrupt"
+    | Poor -> LWord "poor"
     | Left -> LWord "left"
     | Saw -> LWord "saw"
     | Thought -> LWord "thought"

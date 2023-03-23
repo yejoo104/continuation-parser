@@ -34,6 +34,8 @@ module Token : sig
     | Everyone
     | Everyones
     | Someone
+    | A
+    | Is
     | On
     | InFrontOf
     | Whansung
@@ -44,6 +46,10 @@ module Token : sig
     | Friend
     | Birthday
     | Lawyer
+    | Woman
+    | Pretty
+    | Bankrupt
+    | Poor
     | Left
     | Saw
     | Thought
