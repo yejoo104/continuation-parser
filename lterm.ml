@@ -12,6 +12,7 @@ type t =
   | LExists of string * t
   | LApp of t * t
   | LAnd of t * t
+  | LImplies of t * t
 
 (* function that takes a lambda expression as input and returns a corresponding string *)
 let rec to_string (lambda : t) : string =
@@ -33,6 +34,7 @@ let rec to_string (lambda : t) : string =
         (to_string exp1) ^ "(" ^ (to_string exp2) ^ ")"
       | _, _ -> (to_string exp1) ^ " " ^ (to_string exp2))
   | LAnd (exp1, exp2) -> (to_string exp1) ^ "∧" ^ (to_string exp2)
+  | LImplies (exp1, exp2) -> (to_string exp1) ^ "=>" ^ (to_string exp2)
 
 (* function that returns a set of free variables of a given lambda expression *)
 let rec fv (lambda : t) : SS.t =
@@ -41,7 +43,7 @@ let rec fv (lambda : t) : SS.t =
   | LId x -> SS.singleton x
   | LLam (x, exp) | LForall (x, exp) | LExists (x, exp) ->
     SS.remove x (fv exp)
-  | LApp (exp1, exp2) | LAnd (exp1, exp2) -> SS.union (fv exp1) (fv exp2)
+  | LApp (exp1, exp2) | LAnd (exp1, exp2) | LImplies (exp1, exp2) -> SS.union (fv exp1) (fv exp2)
 
 (* function that generates a fresh variable that is not in the set of free variables *)
 let rec fresh_var (v : string) (fvs : SS.t) =
@@ -77,6 +79,7 @@ let rec substitute (e1 : t) (v : string) (e2 : t) =
         LExists (y, substitute (substitute exp x (LId y)) v e2)
   | LApp (e3, e4) -> LApp (substitute e3 v e2, substitute e4 v e2)
   | LAnd (e3, e4) -> LAnd (substitute e3 v e2, substitute e4 v e2)
+  | LImplies (e3, e4) -> LImplies (substitute e3 v e2, substitute e4 v e2)
 
 (* function that takes one small step from a lambda expression to another lambda expression. returns None if no step is taken *)
 let rec reduce (lambda : t) : t option =
@@ -107,6 +110,12 @@ let rec reduce (lambda : t) : t option =
          | None -> None
          | Some new_exp2 -> Some (LAnd (exp1, new_exp2)))
      | Some new_exp1 -> Some (LAnd (new_exp1, exp2)))
+  | LImplies (exp1, exp2) ->
+    (match reduce exp1 with
+     | None -> (match reduce exp2 with
+         | None -> None
+         | Some new_exp2 -> Some (LImplies (exp1, new_exp2)))
+     | Some new_exp1 -> Some (LImplies (new_exp1, exp2)))
 
 (* function that reduces a lambda expression fully and prints the process *)
 let normal_form_print (lambda : t) : t =

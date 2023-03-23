@@ -52,6 +52,7 @@ module Token = struct
     | Everyone
     | Everyones
     | Someone
+    | If
     | A
     | Is
     | On
@@ -88,6 +89,7 @@ module Token = struct
     | "everyone" -> Everyone
     | "everyone's" -> Everyones
     | "someone" -> Someone
+    | "if" -> If
     | "a" -> A
     | "is" -> Is
     | "on" -> On
@@ -126,6 +128,7 @@ module Token = struct
     | Everyone -> "everyone"
     | Everyones -> "everyone's"
     | Someone -> "someone"
+    | If -> "if"
     | A -> "a"
     | Is -> "is"
     | On -> "on"
@@ -156,6 +159,7 @@ module Token = struct
     | She | Her | He | His | Him | They | Their | Them -> Function(Continuation(Element, Truth), Pronoun(Element, Truth))
     | Everyone | Everyones -> Function(Continuation(Element, Truth), Truth)
     | Someone -> Function(Continuation(Element, Truth), Truth)
+    | If -> Forward(Truth, Forward(Truth, Truth))
     | A -> Forward(Backward(Element, Truth), Function(Continuation(Element, Truth), Truth))
     | Is -> Forward(Backward(Element, Truth), Backward(Element, Truth))
     | On -> Forward(Element, Backward(Backward (Element, Truth), Backward(Element, Truth)))
@@ -183,6 +187,7 @@ module Token = struct
     | She | Her | He | His | Him | They | Their | Them -> LLam ("c", LId "c")
     | Everyone | Everyones -> LLam ("c", LForall ("x", LApp (LId "c", LId "x")))
     | Someone -> LLam ("c", LExists ("x", LApp (LId "c", LId "x")))
+    | If -> LLam("P", LLam ("Q", LImplies (LId "P", LId "Q")))
     | A -> LLam("P", LLam("c", LExists ("x", LAnd (LApp (LId "P", LId "x"), LApp (LId "c", LId "x")))))
     | Is -> LLam ("x", LId "x")
     | On -> LWord "on"

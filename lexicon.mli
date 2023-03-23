@@ -34,6 +34,7 @@ module Token : sig
     | Everyone
     | Everyones
     | Someone
+    | If
     | A
     | Is
     | On

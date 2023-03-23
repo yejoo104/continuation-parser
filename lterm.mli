@@ -11,6 +11,7 @@ type t =
   | LExists of string * t
   | LApp of t * t
   | LAnd of t * t
+  | LImplies of t * t
 
 (* function that takes a lambda expression as input and returns a corresponding string *)
 val to_string : t -> string
